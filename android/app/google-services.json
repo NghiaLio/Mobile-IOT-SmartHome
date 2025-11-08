@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "119993363465",
+    "project_id": "smart-944cb",
+    "storage_bucket": "smart-944cb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:119993363465:android:bdd84d07f77f1c26b79cd8",
+        "android_client_info": {
+          "package_name": "com.example.smart_home"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTUrYm7Og_Lm986Jfu_ahM_M76XPLLE9E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
