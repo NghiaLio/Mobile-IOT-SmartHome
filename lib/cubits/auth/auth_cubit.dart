@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../services/auth_service.dart';
-import '../../services/connection_preferences_service.dart';
+import 'dart:developer';
 
 // Events
 abstract class AuthEvent {}
@@ -77,6 +77,7 @@ class AuthCubit extends Cubit<AuthState> {
         password: password,
         displayName: displayName,
       );
+      log('Đăng ký thành công: $email');
     } catch (e) {
       emit(AuthError(e.toString()));
     }
@@ -86,6 +87,7 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(AuthLoading());
       await _authService.signIn(email: email, password: password);
+      log('Đăng nhập thành công: $email');
     } catch (e) {
       emit(AuthError(e.toString()));
     }
@@ -94,8 +96,8 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signOut() async {
     try {
       emit(AuthLoading());
-      await ConnectionPreferencesService.clearConnection();
       await _authService.signOut();
+      log('Đăng xuất thành công');
     } catch (e) {
       emit(AuthError(e.toString()));
     }

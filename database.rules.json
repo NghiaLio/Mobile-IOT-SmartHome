@@ -1,0 +1,61 @@
+{
+  "rules": {
+    "devices": {
+      "$deviceId": {
+        // Chỉ owner (authenticated) mới có thể đọc/ghi owner_uid
+        "owner_uid": {
+          ".read": "auth != null && (
+            !data.exists() || 
+            data.val() === auth.uid
+          )",
+          ".write": "auth != null && !data.exists()"
+        },
+        
+        // Quản lý authorized_users - CHỈ cho authenticated users
+        "authorized_users": {
+          ".read": "auth != null && (
+            root.child('devices/' + $deviceId + '/owner_uid').val() === auth.uid ||
+            root.child('devices/' + $deviceId + '/authorized_users/' + auth.uid).val() === true
+          )",
+          
+          "$userId": {
+            // Owner có thể thêm/xóa, hoặc user tự thêm mình qua share code
+            ".write": "auth != null && (
+              root.child('devices/' + $deviceId + '/owner_uid').val() === auth.uid ||
+              auth.uid === $userId
+            )"
+          }
+        },
+        
+        // Share Codes - Cho phép owner tạo và mọi người đọc để validate
+        "share_codes": {
+          ".read": "auth != null",
+          ".indexOn": ["code"],
+          
+          "$codeId": {
+            // Owner có thể tạo share code
+            ".write": "auth != null && (
+              root.child('devices/' + $deviceId + '/owner_uid').val() === auth.uid ||
+              (data.exists() && auth != null)
+            )"
+          }
+        },
+        
+        // Dữ liệu thiết bị - CHO PHÉP ESP (unauthenticated) đọc/ghi
+        "data": {
+          // Mọi người có thể đọc (bao gồm ESP và authenticated users)
+          ".read": true,
+          // Mọi người có thể ghi (bao gồm ESP và authenticated users)
+          ".write": true
+        },
+        
+        // Card data (RFID) - CHO PHÉP ESP ghi, authenticated users đọc/ghi
+        "card": {
+          ".read": true,
+          ".write": true
+        }
+      }
+    }
+  }
+}
+

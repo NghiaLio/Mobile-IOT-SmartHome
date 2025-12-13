@@ -1,0 +1,29 @@
+{
+  "devices": {
+    "esp123": {
+      " ": {
+        "65k3llODYoZJcJRUJhzznJrtely2": true
+      },
+      "card": {
+        "-OgMDITZRmOlja-T00QP": {
+          "card": "CE A2 B0 05"
+        },
+        "-OgMDniS4HqQ7OXm4IBn": {
+          "card": "84 49 49 01"
+        }
+      },
+      "data": {
+        "addCard": 0,
+        "doorAngle": 0,
+        "fanState": 0,
+        "flameDetected": 0,
+        "gasLevel": 123,
+        "humidity": 58,
+        "ledState": 0,
+        "rainDetected": 1,
+        "temperature": 25
+      },
+      "owner_uid": "65k3llODYoZJcJRUJhzznJrtely2"
+    }
+  }
+}

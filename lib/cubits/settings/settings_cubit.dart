@@ -24,6 +24,8 @@ class SettingsError extends SettingsState {
 class SettingsCubit extends Cubit<SettingsState> {
   final DatabaseReference _database;
 
+  DatabaseReference get database => _database;
+
   SettingsCubit(this._database) : super(SettingsInitial());
 
   /// Kết nối thiết bị ESP với Cloud bằng cách lưu UID của người dùng vào Firebase
@@ -34,17 +36,37 @@ class SettingsCubit extends Cubit<SettingsState> {
     try {
       emit(SettingsLoading());
 
-      // Lưu owner_uid vào devices/{deviceId}/owner_uid
-      await _database.child('devices/$deviceId/owner_uid').set(userUid);
-      log('Đã lưu owner_uid: devices/$deviceId/owner_uid = $userUid');
+      // Kiểm tra xem thiết bị đã có owner chưa
+      final ownerSnapshot = await _database.child('devices/$deviceId/owner_uid').get();
+      
+      if (ownerSnapshot.exists) {
+        // Thiết bị đã có owner
+        final existingOwnerUid = ownerSnapshot.value as String;
+        
+        if (existingOwnerUid == userUid) {
+          // User này đã là owner, chỉ cần thêm vào authorized_users
+          await _database
+              .child('devices/$deviceId/authorized_users/$userUid')
+              .set(true);
+          log('User đã là owner, đã thêm vào authorized_users');
+        } else {
+          // Thiết bị đã thuộc về người khác
+          emit(SettingsError(
+            'Thiết bị này đã được kết nối bởi người dùng khác. Vui lòng liên hệ owner để được cấp quyền.',
+          ));
+          return;
+        }
+      } else {
+        // Thiết bị chưa có owner, user này sẽ là owner đầu tiên
+        await _database.child('devices/$deviceId/owner_uid').set(userUid);
+        log('Đã lưu owner_uid: devices/$deviceId/owner_uid = $userUid');
 
-      // Thêm user vào authorized_users: devices/{deviceId}/authorized_users/{userUid} = true
-      await _database
-          .child('devices/$deviceId/authorized_users/$userUid')
-          .set(true);
-      log(
-        'Đã thêm user vào authorized_users: devices/$deviceId/authorized_users/$userUid = true',
-      );
+        // Thêm owner vào authorized_users
+        await _database
+            .child('devices/$deviceId/authorized_users/$userUid')
+            .set(true);
+        log('Đã thêm owner vào authorized_users: devices/$deviceId/authorized_users/$userUid = true');
+      }
 
       // Lưu connection status vào SharedPreferences
       await ConnectionPreferencesService.saveConnected(userUid, deviceId);
@@ -58,7 +80,13 @@ class SettingsCubit extends Cubit<SettingsState> {
   }
 
   /// Kiểm tra xem thiết bị đã được kết nối chưa
-  Future<bool> isDeviceConnected({required String deviceId}) async {
+  Future<bool> isDeviceConnected(String userUid) async {
+    final userID = await ConnectionPreferencesService.getConnectedUserUid();
+
+    final deviceId = await ConnectionPreferencesService.getConnectedDeviceId();
+    if (userID != userUid || deviceId == null) {
+      return false;
+    }
     try {
       final snapshot =
           await _database.child('devices/$deviceId/owner_uid').get();

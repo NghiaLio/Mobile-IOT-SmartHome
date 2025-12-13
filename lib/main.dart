@@ -5,14 +5,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'firebase_options.dart';
 import 'services/auth_service.dart';
-import 'services/connection_preferences_service.dart';
 import 'cubits/auth/auth_cubit.dart';
 import 'cubits/device/device_cubit.dart';
 import 'cubits/speech/speech_cubit.dart';
 import 'cubits/settings/settings_cubit.dart';
+import 'cubits/rfid/rfid_cubit.dart';
+import 'cubits/share/share_cubit.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/signup_screen.dart';
-import 'screens/settings/cloud_connection_screen.dart';
 import 'screens/home/home_screen.dart';
 
 void main() async {
@@ -38,10 +38,12 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => AuthCubit(authService)),
         BlocProvider(
-          create: (context) => DeviceCubit(database, deviceId: 'esp123'),
+          create: (context) => DeviceCubit(database),
         ),
         BlocProvider(create: (context) => SpeechCubit(SpeechToText())),
         BlocProvider(create: (context) => SettingsCubit(database)),
+        BlocProvider(create: (context) => RfidCubit(database)),
+        BlocProvider(create: (context) => ShareCubit(database)),
       ],
       child: MaterialApp(
         title: 'Smart Home Control',
@@ -68,13 +70,7 @@ class AuthWrapper extends StatefulWidget {
 }
 
 class _AuthWrapperState extends State<AuthWrapper> {
-  late Future<bool> _checkConnectionFuture;
 
-  @override
-  void initState() {
-    super.initState();
-    _checkConnectionFuture = ConnectionPreferencesService.isConnected();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,29 +83,8 @@ class _AuthWrapperState extends State<AuthWrapper> {
         }
 
         if (state is AuthAuthenticated) {
-          return FutureBuilder<bool>(
-            future: _checkConnectionFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Scaffold(
-                  body: Center(child: CircularProgressIndicator()),
-                );
-              }
-
-              final isConnected = snapshot.data ?? false;
-
-              if (isConnected) {
-                // Already connected, go directly to HomeScreen
-                return const HomeScreen();
-              } else {
-                // Not connected, show CloudConnectionScreen for first-time setup
-                return CloudConnectionScreen(
-                  userUid: state.user.uid,
-                  isFirstTime: true,
-                );
-              }
-            },
-          );
+          // Sau khi đăng nhập, luôn vào màn hình chính
+          return const HomeScreen();
         }
 
         return const AuthScreen();
