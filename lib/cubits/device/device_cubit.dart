@@ -111,6 +111,7 @@ class DeviceCubit extends Cubit<DeviceState> {
             if (data != null && data is Map) {
               final ledState = data['ledState'] ?? 0;
               final fanState = data['fanState'] ?? 0;
+              final acState = data['acState'] ?? 0;
               final temperature = (data['temperature'] ?? 0).toDouble();
               final speed = (data['speed'] ?? 0).toInt();
               final humidity = (data['humidity'] ?? 0).toInt();
@@ -125,6 +126,7 @@ class DeviceCubit extends Cubit<DeviceState> {
                   currentState.copyWith(
                     lightState: ledState == 1,
                     fanState: fanState == 1,
+                    acState: acState == 1,
                     temperature: temperature,
                     speed: speed,
                     humidity: humidity,
@@ -139,7 +141,7 @@ class DeviceCubit extends Cubit<DeviceState> {
                   DeviceLoaded(
                     lightState: ledState == 1,
                     fanState: fanState == 1,
-                    acState: false,
+                    acState: acState == 1,
                     temperature: temperature,
                     speed: speed,
                     humidity: humidity,
@@ -198,13 +200,12 @@ class DeviceCubit extends Cubit<DeviceState> {
   }
 
   Future<void> toggleAC(bool value) async {
+    final String deviceId =
+        await ConnectionPreferencesService.getConnectedDeviceId() as String;
     try {
-      // Có thể điều chỉnh temperature để điều khiển AC
-      final String deviceId =
-          await ConnectionPreferencesService.getConnectedDeviceId() as String;
       await _database
-          .child('devices/$deviceId/data/temperature')
-          .set(value ? 20 : 0);
+          .child('devices/$deviceId/data/acState')
+          .set(value ? 1 : 0);
       log('Cập nhật điều hòa: ${value ? "bật" : "tắt"}');
 
       final currentState = state;
@@ -214,6 +215,25 @@ class DeviceCubit extends Cubit<DeviceState> {
     } catch (e) {
       log('Lỗi cập nhật điều hòa: $e');
       emit(DeviceError('Lỗi cập nhật điều hòa: $e'));
+    }
+  }
+
+  Future<void> toggleDoor(bool value) async {
+    final String deviceId =
+        await ConnectionPreferencesService.getConnectedDeviceId() as String;
+    try {
+      await _database
+          .child('devices/$deviceId/data/doorAngle')
+          .set(value ? 90 : 0);
+      log('Cập nhật cửa: ${value ? "mở" : "đóng"}');
+
+      final currentState = state;
+      if (currentState is DeviceLoaded) {
+        emit(currentState.copyWith(doorAngle: value ? 90 : 0));
+      }
+    } catch (e) {
+      log('Lỗi cập nhật cửa: $e');
+      emit(DeviceError('Lỗi cập nhật cửa: $e'));
     }
   }
 }

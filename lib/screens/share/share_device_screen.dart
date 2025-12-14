@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,100 +13,42 @@ class ShareDeviceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.deepPurple.shade900,
-              Colors.deepPurple.shade700,
-              Colors.purple.shade600,
-              Colors.pink.shade500,
-            ],
-          ),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        title: const Text('Chia Sẻ Thiết Bị'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            context.read<ShareCubit>().resetState();
+            Navigator.pop(context);
+          },
         ),
-        child: SafeArea(
-          child: Column(
-            children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
-                child: Row(
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.1),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white),
-                        onPressed: () {
-                          context.read<ShareCubit>().resetState();
-                          Navigator.pop(context);
-                        },
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Chia Sẻ Thiết Bị',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                          SizedBox(height: 4),
-                          Text(
-                            'Tạo mã QR để chia sẻ',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.white70,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+      ),
+      body: BlocConsumer<ShareCubit, ShareState>(
+        listener: (context, state) {
+          if (state is ShareError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
               ),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (state is ShareLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-              // Content
-              Expanded(
-                child: BlocConsumer<ShareCubit, ShareState>(
-                  listener: (context, state) {
-                    if (state is ShareError) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(state.message),
-                          backgroundColor: Colors.red,
-                        ),
-                      );
-                    }
-                  },
-                  builder: (context, state) {
-                    if (state is ShareLoading) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
+          if (state is ShareCodeGenerated) {
+            return _buildQRCodeView(context, state.shareCode);
+          }
 
-                    if (state is ShareCodeGenerated) {
-                      return _buildQRCodeView(context, state.shareCode);
-                    }
-
-                    // Initial state - show generate button
-                    return _buildInitialView(context);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
+          // Initial state - show generate button
+          return _buildInitialView(context);
+        },
       ),
     );
   }
@@ -122,12 +64,12 @@ class ShareDeviceScreen extends StatelessWidget {
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.1),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
               ),
               child: Icon(
                 Icons.qr_code_2,
                 size: 80,
-                color: Colors.white.withOpacity(0.7),
+                color: Theme.of(context).colorScheme.primary,
               ),
             ),
             const SizedBox(height: 32),
@@ -136,7 +78,7 @@ class ShareDeviceScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.white.withOpacity(0.9),
+                color: Theme.of(context).colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
@@ -145,7 +87,7 @@ class ShareDeviceScreen extends StatelessWidget {
               'Tạo mã QR để người khác có thể kết nối\nvào thiết bị của bạn',
               style: TextStyle(
                 fontSize: 16,
-                color: Colors.white.withOpacity(0.7),
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
               ),
               textAlign: TextAlign.center,
             ),
@@ -164,7 +106,10 @@ class ShareDeviceScreen extends StatelessWidget {
                     );
                   }
                 },
-                icon: const Icon(Icons.qr_code_scanner, color: Colors.white),
+                icon: Icon(
+                  Icons.qr_code_scanner,
+                  color: Colors.white,
+                ),
                 label: const Text(
                   'Tạo Mã QR',
                   style: TextStyle(
@@ -178,7 +123,7 @@ class ShareDeviceScreen extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  elevation: 4,
+                  elevation: 2,
                 ),
               ),
             ),
@@ -270,17 +215,20 @@ class ShareDeviceScreen extends StatelessWidget {
                     children: [
                       Text(
                         shareCode.code,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: Theme.of(context).colorScheme.primary,
                           letterSpacing: 8,
                           fontFamily: 'monospace',
                         ),
                       ),
                       const SizedBox(width: 16),
                       IconButton(
-                        icon: const Icon(Icons.copy, color: Colors.white),
+                        icon: Icon(
+                          Icons.copy,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                         onPressed: () {
                           Clipboard.setData(
                             ClipboardData(text: shareCode.code),

@@ -169,7 +169,7 @@ class ShareCubit extends Cubit<ShareState> {
       );
 
       // Lưu vào Firebase
-      final ref = await _database.child('devices/$deviceId/share_codes').push();
+      final ref = _database.child('devices/$deviceId/share_codes').push();
 
       await ref.set(shareCode.toMap());
 

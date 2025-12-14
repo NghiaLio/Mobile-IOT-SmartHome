@@ -58,21 +58,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SizedBox(
         height: double.infinity,
         width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.deepPurple.shade900,
-              Colors.deepPurple.shade700,
-              Colors.purple.shade600,
-              Colors.pink.shade500,
-            ],
-          ),
-        ),
         child: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
@@ -87,18 +76,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [Colors.amber.shade400, Colors.orange.shade600],
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.amber.withOpacity(0.5),
-                          blurRadius: 20,
-                          spreadRadius: 5,
-                        ),
-                      ],
+                      color: Theme.of(context).colorScheme.primary,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.home_rounded,
                       size: 60,
                       color: Colors.white,
@@ -108,12 +88,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(height: 30),
 
                   // Title
-                  const Text(
+                  Text(
                     'Tạo Tài Khoản',
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onSurface,
                       letterSpacing: 1.5,
                     ),
                   ),
@@ -124,7 +104,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     'Đăng ký để bắt đầu',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.white.withOpacity(0.8),
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                     ),
                   ),
 
@@ -133,34 +113,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   // Name TextField
                   TextField(
                     controller: _nameController,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                     decoration: InputDecoration(
                       hintText: 'Họ và tên',
                       hintStyle: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                       ),
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.person,
-                        color: Colors.white70,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
+                      fillColor: Theme.of(context).cardColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
                           width: 2,
                         ),
                       ),
@@ -172,34 +152,34 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   // Email TextField
                   TextField(
                     controller: _emailController,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                     decoration: InputDecoration(
                       hintText: 'Email',
                       hintStyle: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                       ),
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.email,
-                        color: Colors.white70,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
+                      fillColor: Theme.of(context).cardColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
                           width: 2,
                         ),
                       ),
@@ -212,42 +192,45 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   TextField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                     decoration: InputDecoration(
                       hintText: 'Mật khẩu',
                       hintStyle: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                       ),
-                      prefixIcon: const Icon(Icons.lock, color: Colors.white70),
+                      prefixIcon: Icon(
+                        Icons.lock,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword
                               ? Icons.visibility_off
                               : Icons.visibility,
-                          color: Colors.white70,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                         onPressed: () {
                           setState(() => _obscurePassword = !_obscurePassword);
                         },
                       ),
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
+                      fillColor: Theme.of(context).cardColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
                           width: 2,
                         ),
                       ),
@@ -260,19 +243,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   TextField(
                     controller: _confirmPasswordController,
                     obscureText: _obscureConfirmPassword,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                     decoration: InputDecoration(
                       hintText: 'Xác nhận mật khẩu',
                       hintStyle: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                       ),
-                      prefixIcon: const Icon(Icons.lock, color: Colors.white70),
+                      prefixIcon: Icon(
+                        Icons.lock,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscureConfirmPassword
                               ? Icons.visibility_off
                               : Icons.visibility,
-                          color: Colors.white70,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                         onPressed: () {
                           setState(
@@ -283,23 +269,23 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                       ),
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
+                      fillColor: Theme.of(context).cardColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
                           width: 2,
                         ),
                       ),
@@ -319,12 +305,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           onPressed:
                               isLoading ? null : () => _handleSignUp(context),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.amber.shade500,
+                            backgroundColor: Theme.of(context).colorScheme.primary,
                             disabledBackgroundColor: Colors.grey,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            elevation: 8,
+                            elevation: 2,
                           ),
                           child:
                               isLoading
@@ -357,14 +343,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     children: [
                       Text(
                         'Đã có tài khoản? ',
-                        style: TextStyle(color: Colors.white.withOpacity(0.8)),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                        ),
                       ),
                       GestureDetector(
                         onTap: widget.onSignInTap,
-                        child: const Text(
+                        child: Text(
                           'Đăng nhập',
                           style: TextStyle(
-                            color: Colors.amber,
+                            color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),

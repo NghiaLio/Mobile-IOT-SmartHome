@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../cubits/auth/auth_cubit.dart';
-import '../share/join_device_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback onSignUpTap;
@@ -43,21 +42,10 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: SizedBox(
         height: double.infinity,
         width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.deepPurple.shade900,
-              Colors.deepPurple.shade700,
-              Colors.purple.shade600,
-              Colors.pink.shade500,
-            ],
-          ),
-        ),
         child: SafeArea(
           child: SingleChildScrollView(
             child: Padding(
@@ -72,18 +60,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [Colors.amber.shade400, Colors.orange.shade600],
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.amber.withOpacity(0.5),
-                          blurRadius: 20,
-                          spreadRadius: 5,
-                        ),
-                      ],
+                      color: Theme.of(context).colorScheme.primary,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.home_rounded,
                       size: 60,
                       color: Colors.white,
@@ -93,12 +72,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 40),
 
                   // Title
-                  const Text(
+                  Text(
                     'Nhà Thông Minh',
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.onSurface,
                       letterSpacing: 1.5,
                     ),
                   ),
@@ -109,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     'Đăng nhập để điều khiển thiết bị',
                     style: TextStyle(
                       fontSize: 16,
-                      color: Colors.white.withOpacity(0.8),
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                     ),
                   ),
 
@@ -118,34 +97,34 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Email TextField
                   TextField(
                     controller: _emailController,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                     decoration: InputDecoration(
                       hintText: 'Email',
                       hintStyle: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                       ),
-                      prefixIcon: const Icon(
+                      prefixIcon: Icon(
                         Icons.email,
-                        color: Colors.white70,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
+                      fillColor: Theme.of(context).cardColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
                           width: 2,
                         ),
                       ),
@@ -158,42 +137,45 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextField(
                     controller: _passwordController,
                     obscureText: _obscurePassword,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                     decoration: InputDecoration(
                       hintText: 'Mật khẩu',
                       hintStyle: TextStyle(
-                        color: Colors.white.withOpacity(0.6),
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                       ),
-                      prefixIcon: const Icon(Icons.lock, color: Colors.white70),
+                      prefixIcon: Icon(
+                        Icons.lock,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword
                               ? Icons.visibility_off
                               : Icons.visibility,
-                          color: Colors.white70,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                         onPressed: () {
                           setState(() => _obscurePassword = !_obscurePassword);
                         },
                       ),
                       filled: true,
-                      fillColor: Colors.white.withOpacity(0.1),
+                      fillColor: Theme.of(context).cardColor,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
                         ),
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Colors.white.withOpacity(0.3),
+                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
                         ),
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Colors.white,
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.primary,
                           width: 2,
                         ),
                       ),
@@ -213,12 +195,12 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed:
                               isLoading ? null : () => _handleLogin(context),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.amber.shade500,
+                            backgroundColor: Theme.of(context).colorScheme.primary,
                             disabledBackgroundColor: Colors.grey,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
-                            elevation: 8,
+                            elevation: 2,
                           ),
                           child:
                               isLoading
@@ -251,85 +233,22 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       Text(
                         'Chưa có tài khoản? ',
-                        style: TextStyle(color: Colors.white.withOpacity(0.8)),
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                        ),
                       ),
                       GestureDetector(
                         onTap: widget.onSignUpTap,
-                        child: const Text(
+                        child: Text(
                           'Đăng ký',
                           style: TextStyle(
-                            color: Colors.amber,
+                            color: Theme.of(context).colorScheme.primary,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
                         ),
                       ),
                     ],
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Divider
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Divider(
-                          color: Colors.white.withOpacity(0.3),
-                          thickness: 1,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Text(
-                          'hoặc',
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.6),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Divider(
-                          color: Colors.white.withOpacity(0.3),
-                          thickness: 1,
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 24),
-
-                  // Join with Code Button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 56,
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const JoinDeviceScreen(),
-                          ),
-                        );
-                      },
-                      icon: const Icon(Icons.qr_code_scanner, color: Colors.white),
-                      label: const Text(
-                        'Tham Gia Bằng Mã QR',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          color: Colors.white.withOpacity(0.5),
-                          width: 2,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
                   ),
                 ],
               ),

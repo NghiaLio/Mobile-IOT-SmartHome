@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -53,16 +53,7 @@ class _JoinDeviceScreenState extends State<JoinDeviceScreen> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.deepPurple.shade900,
-              Colors.deepPurple.shade700,
-              Colors.purple.shade600,
-              Colors.pink.shade500,
-            ],
-          ),
+          color: Theme.of(context).scaffoldBackgroundColor,
         ),
         child: SafeArea(
           child: Column(
@@ -75,10 +66,15 @@ class _JoinDeviceScreenState extends State<JoinDeviceScreen> {
                     Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Colors.white.withOpacity(0.1),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.primary.withOpacity(0.1),
                       ),
                       child: IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Theme.of(context).colorScheme.onSurface,
+                        ),
                         onPressed: () {
                           context.read<ShareCubit>().resetState();
                           Navigator.pop(context);
@@ -86,7 +82,7 @@ class _JoinDeviceScreenState extends State<JoinDeviceScreen> {
                       ),
                     ),
                     const SizedBox(width: 16),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -95,7 +91,7 @@ class _JoinDeviceScreenState extends State<JoinDeviceScreen> {
                             style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                           SizedBox(height: 4),
@@ -103,7 +99,9 @@ class _JoinDeviceScreenState extends State<JoinDeviceScreen> {
                             'Quét QR hoặc nhập mã',
                             style: TextStyle(
                               fontSize: 14,
-                              color: Colors.white70,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withOpacity(0.7),
                             ),
                           ),
                         ],
@@ -122,7 +120,10 @@ class _JoinDeviceScreenState extends State<JoinDeviceScreen> {
                         SnackBar(
                           content: Row(
                             children: [
-                              Icon(Icons.check_circle, color: Colors.white),
+                              Icon(
+                                Icons.check_circle,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
                               SizedBox(width: 12),
                               Expanded(child: Text(state.message)),
                             ],
@@ -154,7 +155,7 @@ class _JoinDeviceScreenState extends State<JoinDeviceScreen> {
                   },
                   builder: (context, state) {
                     if (state is ShareLoading) {
-                      return const Center(
+                      return Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -162,7 +163,9 @@ class _JoinDeviceScreenState extends State<JoinDeviceScreen> {
                             SizedBox(height: 16),
                             Text(
                               'Đang xử lý...',
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
                             ),
                           ],
                         ),
@@ -229,14 +232,16 @@ class _JoinDeviceScreenState extends State<JoinDeviceScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: isActive
-              ? Colors.white.withOpacity(0.2)
-              : Colors.white.withOpacity(0.05),
+          color:
+              isActive
+                  ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
+                  : Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isActive
-                ? Colors.white.withOpacity(0.4)
-                : Colors.white.withOpacity(0.1),
+            color:
+                isActive
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.outline.withOpacity(0.3),
             width: 2,
           ),
         ),
@@ -245,7 +250,12 @@ class _JoinDeviceScreenState extends State<JoinDeviceScreen> {
           children: [
             Icon(
               icon,
-              color: Colors.white,
+              color:
+                  isActive
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.6),
               size: 20,
             ),
             const SizedBox(width: 8),
@@ -254,7 +264,12 @@ class _JoinDeviceScreenState extends State<JoinDeviceScreen> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-                color: Colors.white,
+                color:
+                    isActive
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.7),
               ),
             ),
           ],
@@ -268,10 +283,7 @@ class _JoinDeviceScreenState extends State<JoinDeviceScreen> {
       height: 400,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.3),
-          width: 3,
-        ),
+        border: Border.all(color: Colors.white.withOpacity(0.3), width: 3),
       ),
       clipBehavior: Clip.hardEdge,
       child: Stack(
@@ -311,109 +323,136 @@ class _JoinDeviceScreenState extends State<JoinDeviceScreen> {
   Widget _buildManualInput() {
     return Column(
       children: [
-        Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: Colors.white.withOpacity(0.2),
-              width: 2,
+        Card(
+          elevation: 2,
+          child: Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(16),
+              color: Theme.of(context).cardColor,
+              border: Border.all(
+                color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                width: 2,
+              ),
             ),
-          ),
-          child: Column(
-            children: [
-              Icon(
-                Icons.vpn_key,
-                size: 64,
-                color: Colors.white.withOpacity(0.7),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Nhập mã thiết bị',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white.withOpacity(0.9),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.vpn_key,
+                  size: 64,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Nhập mã 6 ký tự được chia sẻ',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white.withOpacity(0.7),
+                const SizedBox(height: 24),
+                Text(
+                  'Nhập mã thiết bị',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
-              TextField(
-                controller: _codeController,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 8,
+                const SizedBox(height: 8),
+                Text(
+                  'Nhập mã 6 ký tự được chia sẻ',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withOpacity(0.7),
+                  ),
                 ),
-                textAlign: TextAlign.center,
-                textCapitalization: TextCapitalization.characters,
-                maxLength: 6,
-                decoration: InputDecoration(
-                  hintText: 'ABC123',
-                  hintStyle: TextStyle(
-                    color: Colors.white.withOpacity(0.3),
+                const SizedBox(height: 24),
+                TextField(
+                  controller: _codeController,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSurface,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
                     letterSpacing: 8,
                   ),
-                  filled: true,
-                  fillColor: Colors.black.withOpacity(0.3),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  counterStyle: TextStyle(
-                    color: Colors.white.withOpacity(0.5),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                height: 56,
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    if (_codeController.text.length == 6) {
-                      _handleCode(_codeController.text);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Vui lòng nhập đủ 6 ký tự'),
-                          backgroundColor: Colors.orange,
-                        ),
-                      );
-                    }
-                  },
-                  icon: const Icon(Icons.login, color: Colors.white),
-                  label: const Text(
-                    'Tham Gia',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                  textAlign: TextAlign.center,
+                  textCapitalization: TextCapitalization.characters,
+                  maxLength: 6,
+                  decoration: InputDecoration(
+                    hintText: 'ABC123',
+                    hintStyle: TextStyle(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.3),
+                      letterSpacing: 8,
+                    ),
+                    filled: true,
+                    fillColor: Theme.of(context).colorScheme.surface,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.outline.withOpacity(0.3),
+                      ),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.outline.withOpacity(0.3),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.primary,
+                        width: 2,
+                      ),
+                    ),
+                    counterStyle: TextStyle(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withOpacity(0.5),
                     ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green.shade500,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                ),
+                const SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  height: 56,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      if (_codeController.text.length == 6) {
+                        _handleCode(_codeController.text);
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Vui lòng nhập đủ 6 ký tự'),
+                            backgroundColor: Colors.orange,
+                          ),
+                        );
+                      }
+                    },
+                    icon: const Icon(Icons.login, color: Colors.white),
+                    label: const Text(
+                      'Tham Gia',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                    elevation: 4,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green.shade500,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      elevation: 2,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
     );
   }
 }
-

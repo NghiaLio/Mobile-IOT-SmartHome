@@ -11,6 +11,7 @@ import 'cubits/speech/speech_cubit.dart';
 import 'cubits/settings/settings_cubit.dart';
 import 'cubits/rfid/rfid_cubit.dart';
 import 'cubits/share/share_cubit.dart';
+import 'cubits/theme/theme_cubit.dart';
 import 'screens/auth/login_screen.dart';
 import 'screens/auth/signup_screen.dart';
 import 'screens/home/home_screen.dart';
@@ -44,19 +45,61 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => SettingsCubit(database)),
         BlocProvider(create: (context) => RfidCubit(database)),
         BlocProvider(create: (context) => ShareCubit(database)),
+        BlocProvider(create: (context) => ThemeCubit()),
       ],
-      child: MaterialApp(
-        title: 'Smart Home Control',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.deepPurple,
-            brightness: Brightness.dark,
-          ),
-          useMaterial3: true,
-          brightness: Brightness.dark,
-        ),
-        home: const AuthWrapper(),
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, themeState) {
+          final isDarkMode = themeState is ThemeChanged
+              ? themeState.isDarkMode
+              : themeState is ThemeInitial
+                  ? themeState.isDarkMode
+                  : true;
+
+          return MaterialApp(
+            title: 'Smart Home Control',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              useMaterial3: true,
+              brightness: Brightness.light,
+              colorScheme: ColorScheme.light(
+                primary: Colors.blue.shade700,
+                secondary: Colors.blue.shade500,
+                surface: Colors.white,
+                // ignore: deprecated_member_use
+                background: Colors.grey.shade50,
+                error: Colors.red.shade600,
+              ),
+              scaffoldBackgroundColor: Colors.grey.shade50,
+              cardColor: Colors.white,
+              appBarTheme: AppBarTheme(
+                backgroundColor: Colors.blue.shade700,
+                foregroundColor: Colors.white,
+                elevation: 0,
+              ),
+            ),
+            darkTheme: ThemeData(
+              useMaterial3: true,
+              brightness: Brightness.dark,
+              colorScheme: ColorScheme.dark(
+                primary: Colors.blue.shade400,
+                secondary: Colors.blue.shade300,
+                surface: Colors.grey.shade900,
+                // ignore: deprecated_member_use
+                background: Colors.grey.shade900,
+                error: Colors.red.shade400,
+              ),
+              scaffoldBackgroundColor: Colors.grey.shade900,
+              cardColor: Colors.grey.shade800,
+              appBarTheme: AppBarTheme(
+                backgroundColor: Colors.grey.shade800,
+                foregroundColor: Colors.white,
+                elevation: 0,
+              ),
+            ),
+            themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            home: const AuthWrapper(),
+          );
+        },
       ),
     );
   }
