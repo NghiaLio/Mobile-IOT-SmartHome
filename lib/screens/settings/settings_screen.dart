@@ -12,26 +12,26 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Cài Đặt'),
-      ),
+      appBar: AppBar(title: const Text('Cài Đặt')),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
           // Theme Section
           _buildSectionHeader('Giao Diện'),
           _buildThemeToggle(context),
-          
+
           const SizedBox(height: 24),
-          
+
           // Device Section
           _buildSectionHeader('Thiết Bị'),
           _buildDeviceSettings(context),
-          
+
           const SizedBox(height: 24),
-          
+
           // Account Section
           _buildSectionHeader('Tài Khoản'),
+          _buildAccountInfo(context),
+          const SizedBox(height: 8),
           _buildLogoutButton(context),
         ],
       ),
@@ -55,9 +55,10 @@ class SettingsScreen extends StatelessWidget {
   Widget _buildThemeToggle(BuildContext context) {
     return BlocBuilder<ThemeCubit, ThemeState>(
       builder: (context, state) {
-        final isDarkMode = state is ThemeChanged
-            ? state.isDarkMode
-            : state is ThemeInitial
+        final isDarkMode =
+            state is ThemeChanged
+                ? state.isDarkMode
+                : state is ThemeInitial
                 ? state.isDarkMode
                 : true;
 
@@ -68,7 +69,9 @@ class SettingsScreen extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
             ),
             title: const Text('Chế độ sáng/tối'),
-            subtitle: Text(isDarkMode ? 'Đang dùng chế độ tối' : 'Đang dùng chế độ sáng'),
+            subtitle: Text(
+              isDarkMode ? 'Đang dùng chế độ tối' : 'Đang dùng chế độ sáng',
+            ),
             trailing: Switch(
               value: isDarkMode,
               onChanged: (value) {
@@ -83,7 +86,7 @@ class SettingsScreen extends StatelessWidget {
 
   Widget _buildDeviceSettings(BuildContext context) {
     final authState = context.read<AuthCubit>().state;
-    
+
     if (authState is! AuthAuthenticated) {
       return const SizedBox.shrink();
     }
@@ -103,10 +106,11 @@ class SettingsScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => CloudConnectionScreen(
-                    userUid: authState.user.uid,
-                    isFirstTime: false,
-                  ),
+                  builder:
+                      (context) => CloudConnectionScreen(
+                        userUid: authState.user.uid,
+                        isFirstTime: false,
+                      ),
                 ),
               );
             },
@@ -119,39 +123,57 @@ class SettingsScreen extends StatelessWidget {
   Widget _buildLogoutButton(BuildContext context) {
     return Card(
       child: ListTile(
-        leading: Icon(
-          Icons.logout,
-          color: Colors.red.shade600,
-        ),
+        leading: Icon(Icons.logout, color: Colors.red.shade600),
         title: const Text('Đăng xuất'),
         textColor: Colors.red.shade600,
         onTap: () {
           showDialog(
             context: context,
-            builder: (dialogContext) => AlertDialog(
-              title: const Text('Đăng xuất?'),
-              content: const Text('Bạn có chắc muốn đăng xuất?'),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: const Text('Hủy'),
+            builder:
+                (dialogContext) => AlertDialog(
+                  title: const Text('Đăng xuất?'),
+                  content: const Text('Bạn có chắc muốn đăng xuất?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(dialogContext),
+                      child: const Text('Hủy'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        context.read<AuthCubit>().signOut();
+                        Navigator.pop(dialogContext);
+                      },
+                      child: Text(
+                        'Đăng xuất',
+                        style: TextStyle(color: Colors.red.shade600),
+                      ),
+                    ),
+                  ],
                 ),
-                TextButton(
-                  onPressed: () {
-                    context.read<AuthCubit>().signOut();
-                    Navigator.pop(dialogContext);
-                  },
-                  child: Text(
-                    'Đăng xuất',
-                    style: TextStyle(color: Colors.red.shade600),
-                  ),
-                ),
-              ],
-            ),
           );
         },
       ),
     );
   }
-}
 
+  Widget _buildAccountInfo(BuildContext context) {
+    final authState = context.read<AuthCubit>().state;
+    if (authState is! AuthAuthenticated) {
+      return const SizedBox.shrink();
+    }
+
+    final email = authState.user.email ?? 'Không có email';
+    final displayName = authState.user.displayName ?? '';
+
+    return Card(
+      child: ListTile(
+        leading: Icon(
+          Icons.person,
+          color: Theme.of(context).colorScheme.primary,
+        ),
+        title: Text(displayName.isNotEmpty ? displayName : email),
+        subtitle: Text(email),
+      ),
+    );
+  }
+}

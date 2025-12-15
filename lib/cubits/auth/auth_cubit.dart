@@ -58,8 +58,10 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit(this._authService) : super(AuthInitial()) {
     _authService.authStateChanges.listen((user) {
       if (user != null) {
+        log('Auth state changed: user logged in ${user.email}');
         emit(AuthAuthenticated(user));
       } else {
+        log('Auth state changed: user logged out');
         emit(AuthUnauthenticated());
       }
     });
@@ -72,12 +74,20 @@ class AuthCubit extends Cubit<AuthState> {
   }) async {
     try {
       emit(AuthLoading());
-      await _authService.signUp(
+      final userCredential = await _authService.signUp(
         email: email,
         password: password,
         displayName: displayName,
       );
       log('Đăng ký thành công: $email');
+      final user = userCredential?.user;
+      if (user != null) {
+        // Ensure latest user data
+        await user.reload();
+        final current = _authService.currentUser ?? user;
+        log('Emitting AuthAuthenticated for ${current.email} (signup)');
+        emit(AuthAuthenticated(current));
+      }
     } catch (e) {
       emit(AuthError(e.toString()));
     }
@@ -86,8 +96,19 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signIn({required String email, required String password}) async {
     try {
       emit(AuthLoading());
-      await _authService.signIn(email: email, password: password);
+      final userCredential = await _authService.signIn(
+        email: email,
+        password: password,
+      );
       log('Đăng nhập thành công: $email');
+      final user = userCredential?.user;
+      if (user != null) {
+        // Reload to ensure auth State stabilizes and persistent state set
+        await user.reload();
+        final current = _authService.currentUser ?? user;
+        log('Emitting AuthAuthenticated for ${current.email} (signin)');
+        emit(AuthAuthenticated(current));
+      }
     } catch (e) {
       emit(AuthError(e.toString()));
     }
@@ -98,6 +119,7 @@ class AuthCubit extends Cubit<AuthState> {
       emit(AuthLoading());
       await _authService.signOut();
       log('Đăng xuất thành công');
+      emit(AuthUnauthenticated());
     } catch (e) {
       emit(AuthError(e.toString()));
     }

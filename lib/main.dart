@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -38,9 +40,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AuthCubit(authService)),
-        BlocProvider(
-          create: (context) => DeviceCubit(database),
-        ),
+        BlocProvider(create: (context) => DeviceCubit(database)),
         BlocProvider(create: (context) => SpeechCubit(SpeechToText())),
         BlocProvider(create: (context) => SettingsCubit(database)),
         BlocProvider(create: (context) => RfidCubit(database)),
@@ -49,9 +49,10 @@ class MyApp extends StatelessWidget {
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, themeState) {
-          final isDarkMode = themeState is ThemeChanged
-              ? themeState.isDarkMode
-              : themeState is ThemeInitial
+          final isDarkMode =
+              themeState is ThemeChanged
+                  ? themeState.isDarkMode
+                  : themeState is ThemeInitial
                   ? themeState.isDarkMode
                   : true;
 
@@ -113,12 +114,11 @@ class AuthWrapper extends StatefulWidget {
 }
 
 class _AuthWrapperState extends State<AuthWrapper> {
-
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
+        log('Auth State: $state');
         if (state is AuthInitial || state is AuthLoading) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),

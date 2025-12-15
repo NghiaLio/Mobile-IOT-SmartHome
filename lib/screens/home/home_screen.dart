@@ -22,6 +22,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isDeviceConnected = false;
+  String _lastCommand = '';
 
   @override
   void initState() {
@@ -47,6 +48,31 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _handleSignOut(BuildContext context) {
     context.read<AuthCubit>().signOut();
+  }
+
+  void _processVoiceCommand(String command) {
+    final lowerCommand = command.toLowerCase();
+    final deviceCubit = context.read<DeviceCubit>();
+
+    if (lowerCommand.contains('turn on light') ||
+        lowerCommand.contains('bật đèn')) {
+      deviceCubit.toggleLight(true);
+    } else if (lowerCommand.contains('turn off light') ||
+        lowerCommand.contains('tắt đèn')) {
+      deviceCubit.toggleLight(false);
+    } else if (lowerCommand.contains('turn on fan') ||
+        lowerCommand.contains('bật quạt')) {
+      deviceCubit.toggleFan(true);
+    } else if (lowerCommand.contains('turn off fan') ||
+        lowerCommand.contains('tắt quạt')) {
+      deviceCubit.toggleFan(false);
+    } else if (lowerCommand.contains('turn on ac') ||
+        lowerCommand.contains('bật điều hòa')) {
+      deviceCubit.toggleAC(true);
+    } else if (lowerCommand.contains('turn off ac') ||
+        lowerCommand.contains('tắt điều hòa')) {
+      deviceCubit.toggleAC(false);
+    }
   }
 
   void _handleGoToSettings(BuildContext context) {
@@ -78,15 +104,45 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthCubit, AuthState>(
-      listener: (context, state) {
-        if (state is AuthUnauthenticated) {
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const AuthScreen()),
-            (route) => false,
-          );
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AuthCubit, AuthState>(
+          listener: (context, state) {
+            if (state is AuthUnauthenticated) {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const AuthScreen()),
+                (route) => false,
+              );
+            }
+          },
+        ),
+        BlocListener<SpeechCubit, SpeechState>(
+          listener: (context, state) {
+            if (state is SpeechError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.message),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            } else if (state is SpeechNotAvailable) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text(
+                    'Nhận dạng giọng nói không khả dụng trên thiết bị này',
+                  ),
+                  backgroundColor: Colors.orange,
+                ),
+              );
+            } else if (state is SpeechResult) {
+              _lastCommand = state.recognizedWords;
+              if (_lastCommand.isNotEmpty) {
+                _processVoiceCommand(_lastCommand);
+              }
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: SafeArea(
@@ -552,7 +608,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       final isListening =
                                           state is SpeechListening;
                                       return GestureDetector(
-                                        onLongPress:
+                                        onTap:
                                             isListening
                                                 ? () {
                                                   context

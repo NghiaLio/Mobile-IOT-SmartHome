@@ -72,7 +72,12 @@ class SpeechCubit extends Cubit<SpeechState> {
     }
 
     try {
-      await _speechToText.listen(onResult: _onSpeechResult, localeId: 'vi_VN');
+      await _speechToText.listen(
+        onResult: _onSpeechResult,
+        localeId: 'vi_VN',
+        listenFor: Duration(minutes: 5),
+        pauseFor: Duration(minutes: 5),
+      );
       emit(SpeechListening(''));
     } catch (e) {
       emit(SpeechError('Lỗi khi bắt đầu lắng nghe: $e'));
@@ -89,7 +94,12 @@ class SpeechCubit extends Cubit<SpeechState> {
   }
 
   void _onSpeechResult(SpeechRecognitionResult result) {
-    emit(SpeechResult(result.recognizedWords));
+    if (state is SpeechListening) {
+      emit(SpeechListening(result.recognizedWords));
+    }
+    if (result.finalResult) {
+      emit(SpeechResult(result.recognizedWords));
+    }
   }
 
   bool get isListening => _speechToText.isListening;
