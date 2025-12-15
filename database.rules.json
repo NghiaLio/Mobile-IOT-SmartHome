@@ -1,6 +1,9 @@
 {
   "rules": {
     "devices": {
+      // Cho phép authenticated users đọc danh sách devices để tìm share codes
+      ".read": "auth != null",
+      
       "$deviceId": {
         // Chỉ owner (authenticated) mới có thể đọc/ghi owner_uid
         "owner_uid": {
@@ -30,10 +33,11 @@
         // Share Codes - Cho phép owner tạo và mọi người đọc để validate
         "share_codes": {
           ".read": "auth != null",
+          ".write": "auth != null && root.child('devices/' + $deviceId + '/owner_uid').val() === auth.uid",
           ".indexOn": ["code"],
           
           "$codeId": {
-            // Owner có thể tạo share code
+            // Owner hoặc user sử dụng mã có thể cập nhật (used_count, is_active)
             ".write": "auth != null && (
               root.child('devices/' + $deviceId + '/owner_uid').val() === auth.uid ||
               (data.exists() && auth != null)

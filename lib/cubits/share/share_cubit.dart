@@ -128,29 +128,12 @@ class ShareCubit extends Cubit<ShareState> {
         return;
       }
 
-      // Tạo mã code unique
-      String code;
-      bool isUnique = false;
-      int attempts = 0;
+      // Xóa tất cả mã share cũ của device này
+      await _database.child('devices/$deviceId/share_codes').remove();
+      log('Đã xóa tất cả mã share cũ');
 
-      do {
-        code = _generateCode();
-        // Kiểm tra code đã tồn tại chưa
-        final snapshot =
-            await _database
-                .child('devices/$deviceId/share_codes')
-                .orderByChild('code')
-                .equalTo(code)
-                .get();
-
-        isUnique = !snapshot.exists;
-        attempts++;
-
-        if (attempts > 10) {
-          emit(ShareError('Không thể tạo mã unique, vui lòng thử lại'));
-          return;
-        }
-      } while (!isUnique);
+      // Tạo mã code unique mới
+      final code = _generateCode();
 
       // Tạo share code object
       final now = DateTime.now().millisecondsSinceEpoch;
@@ -173,7 +156,7 @@ class ShareCubit extends Cubit<ShareState> {
 
       await ref.set(shareCode.toMap());
 
-      log('Đã tạo share code: $code');
+      log('Đã tạo share code mới: $code');
 
       emit(
         ShareCodeGenerated(
