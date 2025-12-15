@@ -33,6 +33,11 @@
    flutter run
    ```
 
+## Cài đặt ứng dụng
+
+Bạn có thể tải các file cài đặt APK, tài liệu hướng dẫn, hoặc các tài nguyên liên quan tại:
+[Google Drive - Smart Home Installation](https://drive.google.com/drive/folders/1R-O35l5pwepJnr1QjEvjMMr2vpZLeL_n?usp=sharing)
+
 ## Cấu trúc thư mục
 
 - `lib/screens/` - Giao diện các màn hình (đăng nhập, home, cài đặt, chia sẻ...)
